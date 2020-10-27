@@ -31,7 +31,7 @@ public class FileRetriever {
 
 		byte[] buf = new byte[1028];
 
-		DatagramSocket socket = new DatagramSocket(port);
+		DatagramSocket socket = new DatagramSocket();
 		DatagramPacket sendPacket = new DatagramPacket(buf, buf.length, port);
 
 		socket.send(sendPacket);
