@@ -5,19 +5,47 @@ import java.util.*;
 import java.net.DatagramPacket;
 
 public class PacketManager {
+    ReceivedFile[] files;
 
     public PacketManager() {
-        List<ReceivedFile> files;
+        files = new ReceivedFile[3];
     }
 
     public void intake(DatagramPacket receivedPacket) {
         byte[] data;
         data = receivedPacket.getData();
         Packet packet = constructPacket(data);
+
+        // know we'll only receive 3 files, hard code files list to 3
+        // boolean foundFile = false;
+        for (int i = 0; i < 3; i++) {
+            if (files[i] == null) {
+                ReceivedFile newFile = new ReceivedFile(packet.getFileID(), packet);
+                break;
+            } else if (files[i].getFileID() == packet.getFileID()) {
+                files[i].addPacket(packet);
+                break;
+            }
+        }
     }
+
     public boolean allPacketsReceived() {
-        return true;
+        int allComplete = 0;
+        for (int i = 0; i < 3; i++) {
+            if (files[i] == null) {
+                return false;
+            } else if (files[i].isCompleted()) {
+                allComplete++;
+            }
+        }
+
+        if (allComplete == 3) {
+            return true;
+        }
+
+        return false;
     }
+
     public Packet constructPacket(byte[] data){
         boolean isLast = false;
         byte fileID = data[1];
@@ -36,10 +64,16 @@ public class PacketManager {
             int msb = Byte.toUnsignedInt(data[2]);
             int lsb = Byte.toUnsignedInt(data[3]);
             int packetNumber = 256 * msb + lsb;
-            byte[] dataPortion = Arrays.copyOfRange(data, 4, data.length);
+
+            //look for first null occurrence in packet for correct data size.
+            int i = 0;
+            while (data[i] != 0) {
+                i++;
+            }
+            byte[] dataPortion = Arrays.copyOfRange(data, 4, i);
+
             DataPacket dataPacket = new DataPacket(fileID, isLast, packetNumber, dataPortion);
             return dataPacket;
-
         }
     }
     

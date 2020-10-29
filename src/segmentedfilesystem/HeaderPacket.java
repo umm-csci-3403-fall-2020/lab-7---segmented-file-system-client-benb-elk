@@ -14,6 +14,11 @@ public class HeaderPacket extends Packet {
         return fileID;
     }
 
+    @Override
+    boolean isHeaderPacket() {
+        return true;
+    }
+
     String getFileName() {
         return fileName;
     }

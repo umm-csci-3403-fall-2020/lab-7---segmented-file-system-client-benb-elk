@@ -16,13 +16,19 @@ public class DataPacket extends Packet{
     byte getFileID() {
         return fileID;
     }
-    private byte[] getData() {
+
+    @Override
+    boolean isHeaderPacket() {
+        return false;
+    }
+
+    public byte[] getData() {
         return data;
     }
-    private boolean isLastPacket() {
+    public boolean isLastPacket() {
         return isLast;
     }
-    private int getPacketNumber() {
+    public int getPacketNumber() {
         return packetNumber;
     }
 
