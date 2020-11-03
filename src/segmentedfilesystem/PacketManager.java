@@ -15,12 +15,12 @@ public class PacketManager {
         byte[] data;
         data = receivedPacket.getData();
         Packet packet = constructPacket(data);
-
         // know we'll only receive 3 files, hard code files list to 3
         // boolean foundFile = false;
         for (int i = 0; i < 3; i++) {
             if (files[i] == null) {
                 ReceivedFile newFile = new ReceivedFile(packet.getFileID(), packet);
+		files[i] = newFile;
                 break;
             } else if (files[i].getFileID() == packet.getFileID()) {
                 files[i].addPacket(packet);
@@ -37,12 +37,13 @@ public class PacketManager {
             } else if (files[i].isCompleted()) {
                 allComplete++;
             }
+	    System.out.println("here");
         }
 
         if (allComplete == 3) {
             return true;
         }
-
+	
         return false;
     }
 
@@ -51,8 +52,9 @@ public class PacketManager {
         byte fileID = data[1];
         if(data[0] % 2 == 0){
             // status is even => header packet
-            String fileName = new String(data, 2, data.length);
+            String fileName = new String(data, 2, data.length - 3);
             HeaderPacket headerPacket = new HeaderPacket(fileID, fileName);
+	    System.out.println("Header packet found");
             return headerPacket;
         } else { // status is odd => data packet
 
@@ -66,8 +68,8 @@ public class PacketManager {
             int packetNumber = 256 * msb + lsb;
 
             //look for first null occurrence in packet for correct data size.
-            int i = 0;
-            while (data[i] != 0) {
+            int i = 4;
+            while (data[i] != 0 && i < data.length - 1) {
                 i++;
             }
             byte[] dataPortion = Arrays.copyOfRange(data, 4, i);

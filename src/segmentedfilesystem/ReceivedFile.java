@@ -26,7 +26,8 @@ public class ReceivedFile {
 
         DataPacket dp = (DataPacket) packet;
         if (dp.isLastPacket() == true) {
-            totalDataPackets = dp.getPacketNumber();
+		System.out.println("isLastPacket logic has been hit");
+            totalDataPackets = dp.getPacketNumber() + 1;
         }
         dataPackets.put(dp.getPacketNumber(), dp);
     }
@@ -41,7 +42,8 @@ public class ReceivedFile {
         } else if (this.totalDataPackets == -1) {
             return false;
         }
-
+	System.out.println("size: " + this.dataPackets.size());
+	System.out.println("total: " + this.totalDataPackets);
         return (this.dataPackets.size() == this.totalDataPackets);
     }
 
@@ -50,12 +52,12 @@ public class ReceivedFile {
     }
 
     public void constructFile() {
-        File file = new File(this.header.getFileName());
+	System.out.println(this.header.getFileName());
+        File file = new File("/src/" + this.header.getFileName());
         FileOutputStream out = null;
 
         try {
             out = new FileOutputStream(file);
-            System.out.println("The file path is " + file.getPath());
 
             Iterator it = this.dataPackets.keySet().iterator();
             while (it.hasNext()) {
