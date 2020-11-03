@@ -44,5 +44,6 @@ public class FileRetriever {
 
 			pm.intake(receivedPacket);
 		}
+			pm.saveFiles();
 	}
 }

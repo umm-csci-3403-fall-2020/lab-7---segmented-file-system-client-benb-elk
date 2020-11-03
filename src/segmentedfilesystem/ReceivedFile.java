@@ -49,20 +49,22 @@ public class ReceivedFile {
        return  this.header.getFileName();
     }
 
-    public File constructFile() {
+    public void constructFile() {
         File file = new File(this.header.getFileName());
         FileOutputStream out = null;
 
         try {
             out = new FileOutputStream(file);
+            System.out.println("The file path is " + file.getPath());
 
             Iterator it = this.dataPackets.keySet().iterator();
             while (it.hasNext()) {
                 DataPacket dp = dataPackets.get(it.next());
                 out.write(dp.getData());
             }
+            out.close();
         } catch (IOException ioe) {
-
-        }
+            System.out.println("File construction has failed with error message " + ioe + ".");
+        } 
     }
 }

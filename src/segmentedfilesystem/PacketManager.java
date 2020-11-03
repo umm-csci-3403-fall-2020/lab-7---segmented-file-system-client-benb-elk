@@ -76,5 +76,11 @@ public class PacketManager {
             return dataPacket;
         }
     }
+
+    public void saveFiles() {
+        for(int i = 0; i < 3; i++){
+            files[i].constructFile();
+        }
+    } 
     
 }
