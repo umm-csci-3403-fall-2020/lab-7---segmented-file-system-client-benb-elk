@@ -14,7 +14,7 @@ public class PacketManager {
     public void intake(DatagramPacket receivedPacket) {
         byte[] data;
         data = receivedPacket.getData();
-        Packet packet = constructPacket(data);
+        Packet packet = constructPacket(data, receivedPacket.getLength());
         // know we'll only receive 3 files, hard code files list to 3
         // boolean foundFile = false;
         for (int i = 0; i < 3; i++) {
@@ -46,7 +46,7 @@ public class PacketManager {
         return false;
     }
 
-    public Packet constructPacket(byte[] data){
+    public Packet constructPacket(byte[] data, int length){
         boolean isLast = false;
         byte fileID = data[1];
         if(data[0] % 2 == 0){
@@ -67,12 +67,12 @@ public class PacketManager {
 
             //look for first null occurrence in packet for correct data size.
 	    //i starts at 4 to skip over the status and fileID bytes
-            int i = 4;
-            while (i < data.length && data[i] != 0) {
-                i++;
-            }
+//            int i = 4;
+//            while (i < data.length && data[i] != 0) {
+//                i++;
+//            }
 	    // need the + 1 to change index value i into a length
-            byte[] dataPortion = Arrays.copyOfRange(data, 4, i);
+            byte[] dataPortion = Arrays.copyOfRange(data, 4, length);
 
             DataPacket dataPacket = new DataPacket(fileID, isLast, packetNumber, dataPortion);
             return dataPacket;
