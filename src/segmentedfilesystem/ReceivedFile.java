@@ -26,7 +26,7 @@ public class ReceivedFile {
 
         DataPacket dp = (DataPacket) packet;
         if (dp.isLastPacket() == true) {
-		System.out.println("isLastPacket logic has been hit");
+		System.out.println("last packet number: " + dp.getPacketNumber());
             totalDataPackets = dp.getPacketNumber() + 1;
         }
         dataPackets.put(dp.getPacketNumber(), dp);
@@ -52,17 +52,27 @@ public class ReceivedFile {
     }
 
     public void constructFile() {
-	System.out.println(this.header.getFileName());
-        File file = new File("/src/" + this.header.getFileName());
-        FileOutputStream out = null;
-
+	//String path = "src/";
+	//path = path.concat(this.header.getFileName());
+	String filePath = this.header.getFileName();
+	// making sure to get rid of any extra spaces that might be hiding
+	filePath = filePath.trim();
+	System.out.println(filePath);
         try {
+            File file = new File(filePath);
+	    file.createNewFile();
+            FileOutputStream out = null;
+	    
             out = new FileOutputStream(file);
 
             Iterator it = this.dataPackets.keySet().iterator();
             while (it.hasNext()) {
                 DataPacket dp = dataPackets.get(it.next());
-                out.write(dp.getData());
+		for(int i = 0; i < dp.getData().length; i++){
+		    out.write(dp.getData()[i]);
+		    out.flush();
+		}
+               // out.write(dp.getData());
             }
             out.close();
         } catch (IOException ioe) {

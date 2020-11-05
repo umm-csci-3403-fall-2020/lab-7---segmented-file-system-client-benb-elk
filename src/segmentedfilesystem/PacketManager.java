@@ -37,7 +37,6 @@ public class PacketManager {
             } else if (files[i].isCompleted()) {
                 allComplete++;
             }
-	    System.out.println("here");
         }
 
         if (allComplete == 3) {
@@ -54,7 +53,6 @@ public class PacketManager {
             // status is even => header packet
             String fileName = new String(data, 2, data.length - 3);
             HeaderPacket headerPacket = new HeaderPacket(fileID, fileName);
-	    System.out.println("Header packet found");
             return headerPacket;
         } else { // status is odd => data packet
 
@@ -68,10 +66,12 @@ public class PacketManager {
             int packetNumber = 256 * msb + lsb;
 
             //look for first null occurrence in packet for correct data size.
+	    //i starts at 4 to skip over the status and fileID bytes
             int i = 4;
-            while (data[i] != 0 && i < data.length - 1) {
+            while (i < data.length && data[i] != 0) {
                 i++;
             }
+	    // need the + 1 to change index value i into a length
             byte[] dataPortion = Arrays.copyOfRange(data, 4, i);
 
             DataPacket dataPacket = new DataPacket(fileID, isLast, packetNumber, dataPortion);
