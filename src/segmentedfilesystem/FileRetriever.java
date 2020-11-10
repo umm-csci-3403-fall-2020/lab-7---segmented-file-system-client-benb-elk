@@ -39,7 +39,6 @@ public class FileRetriever {
 		socket.send(sendPacket);
 		// Need to implement PacketManager class
 		PacketManager pm = new PacketManager();
-		System.out.println("receiving packets");
 		while (!pm.allPacketsReceived()) {
 			byte[] buf = new byte[1028];
 			DatagramPacket receivedPacket = new DatagramPacket(buf, buf.length);
@@ -47,7 +46,6 @@ public class FileRetriever {
 
 			pm.intake(receivedPacket);
 		}
-		System.out.println("packets received");
 		socket.close();
 		pm.saveFiles();
 	}
